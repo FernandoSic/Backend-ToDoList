@@ -5,10 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const router=express.Router();
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 // Coneccion a la base de datos MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/ToDo-Goals-App');
-
+mongoose.connect(process.env.MONGO_URI);
 
 var indexRouter = require('./routes/index.js');
 var usersRouter = require('./routes/users.js');
@@ -26,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 //midleware
 router.use((req,res,next)=>{
   if (req.headers.authorization && req.headers.authorization==='123456'){
