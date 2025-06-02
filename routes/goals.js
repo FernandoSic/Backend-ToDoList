@@ -40,7 +40,7 @@ router.post('/addGoal', function(req, res, next) {
         res.status(400).json({ error: 'Invalid goal data' });
     }
 });
-router.delete('/romoveGoal/:id', function(req, res, next) {
+router.delete('/removeGoal/:id', function(req, res, next) {
     if (req.params && req.params.id) {
         let id = req.params.id;
         goals = goals.filter(goal => goal.id != id);
