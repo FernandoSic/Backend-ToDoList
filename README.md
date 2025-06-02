@@ -35,14 +35,14 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    npm start
    ```
 
-5. Puedes probar la API desde **Postman** o **Thunder Client**. El servidor estará corriendo en el **puerto 3000** con.
+5. Puedes probar la API desde **Postman** o **Thunder Client**. El servidor estará corriendo en el **puerto 3001** con.
 
-    *Rutas agregadas para http://localhost:3000/tasks*
+    *Rutas agregadas para http://localhost:3001/tasks*
     - /getTasks - GET
     - /removeTask - DELETE
     - /addTask - POST
     
-    *Rutas agregadas para http://localhost:3000/goals*
+    *Rutas agregadas para http://localhost:3001/goals*
     - /getGoals - GET
     - /removeGoal - DELETE
     - /addGoal - POST
