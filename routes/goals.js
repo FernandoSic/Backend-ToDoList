@@ -1,58 +1,52 @@
 var express = require('express');
 var router = express.Router();
+const mongoose = require('mongoose');
 
-let goals = [
-    {
-        id: 1,
-        name: 'Goal 1',
-        description: 'Description for Goal 1',
-        dueDate: '02-10-2023'
-    },
-    {
-        id: 2,
-        name: 'Goal 2',
-        description: 'Description for Goal 2',
-        dueDate: '03-10-2023'
-    },
-    {
-        id: 3,
-        name: 'Goal 3',
-        description: 'Description for Goal 3',
-        dueDate: '04-10-2023'
+const goalInit = mongoose.model('goals', {
+    name: String,
+    description: String,
+    dueDate: String
+},'goals');
 
-    }
-];
+const goals = [];
+
 
 router.get('/getGoals', function(req, res, next) {
-    res.status(200).json(goals);
+    goalInit.find().then((response) => 
+            res.status(200).json(response)
+        ).catch((error) => res.status(500).json(error));
 });
 
 router.post('/addGoal', function(req, res, next) {
-    let timestamp = Date.now() + Math.floor(Math.random() * 1000);
     if (req.body && req.body.name && req.body.description && req.body.dueDate){
-        req.body.id = timestamp;
-        goals.push(req.body);
-        res.status(201).json({
-            message: 'Goal added successfully',
-            goal: req.body
-        });
-    } else {
-        res.status(400).json({ error: 'Invalid goal data' });
-    }
+            goals.push(req.body);
+            const goal = new goalInit(req.body);
+            goal.save().then(() =>
+                    res.status(201).json({
+                message: 'Goal added successfully',
+                task: req.body}
+                )).catch((error) => res.status(500).json(error));
+        }else {
+            res.status(400).json({ error: 'Invalid goal data', task: req.body });
+        }
 });
+
 router.delete('/removeGoal/:id', function(req, res, next) {
-    let id = req.params.id;
-    const goal = goals.find(goal => goal.id == id);
-    if (!goal) {
-        return res.status(400).json({ error: 'Goal not found' });
-    }
-    else {
-        goals = goals.filter(goal => goal.id != id);
-        res.status(200).json({
-            message: 'Goal deleted successfully',
-            goal: goal
-        });
-    }
+    if (req.params && req.params.id) {
+            let id = req.params.id;
+            goalInit.deleteOne({ _id: new mongoose.Types.ObjectId(id) })
+                .then((response) => {
+                    if (response.deletedCount === 0) {
+                        return res.status(400).json({ error: 'Goal not found' });
+                    }
+                    res.status(200).json({
+                        message: 'Goal deleted successfully'
+                    });
+                })
+                .catch((error) => res.status(500).json(error));
+        } else {
+            return res.status(400).json({ error: 'Goal not found' });
+        }
 });
 
 

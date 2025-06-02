@@ -4,6 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const router=express.Router();
+const mongoose = require('mongoose');
+
+// Coneccion a la base de datos MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/ToDo-Goals-App');
+
 
 var indexRouter = require('./routes/index.js');
 var usersRouter = require('./routes/users.js');
