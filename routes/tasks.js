@@ -24,7 +24,7 @@ let tasks = [
 ];
 
 router.get('/getTasks', function(req, res, next) {
-    res.json(tasks);
+    res.status(200).json(tasks);
 });
 
 router.post('/addTask', function(req, res, next) {
@@ -32,21 +32,27 @@ router.post('/addTask', function(req, res, next) {
     if (req.body && req.body.name && req.body.description && req.body.dueDate){
         req.body.id = timestamp;
         tasks.push(req.body);
-        res.json({
+        res.status(201).json({
             message: 'Task added successfully',
             task: req.body
         });
+    } else{
+        res.status(400).json({ error: 'Invalid task data' });
     }
 });
 
 router.delete('/removeTask/:id', function(req, res, next) {
-    if (req.params && req.params.id) {
-        let id = req.params.id;
+    let id = req.params.id;
+    const task = tasks.find(task => task.id == id);
+    if (!task) {
+        return res.status(400).json({ error: 'Task not found' });
+    }else {
+        
         tasks = tasks.filter(task => task.id != id);
-        res.json({
-            message: 'Task deleted successfully'});
-    } else{
-        res.json([{ }]);
+        res.status(200).json({
+            message: 'Task deleted successfully',
+            task: task
+        });
     }
 })
 

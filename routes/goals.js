@@ -24,7 +24,7 @@ let goals = [
 ];
 
 router.get('/getGoals', function(req, res, next) {
-    res.json(goals);
+    res.status(200).json(goals);
 });
 
 router.post('/addGoal', function(req, res, next) {
@@ -32,7 +32,7 @@ router.post('/addGoal', function(req, res, next) {
     if (req.body && req.body.name && req.body.description && req.body.dueDate){
         req.body.id = timestamp;
         goals.push(req.body);
-        res.json({
+        res.status(201).json({
             message: 'Goal added successfully',
             goal: req.body
         });
@@ -40,15 +40,18 @@ router.post('/addGoal', function(req, res, next) {
         res.status(400).json({ error: 'Invalid goal data' });
     }
 });
-router.delete('/romoveGoal/:id', function(req, res, next) {
-    if (req.params && req.params.id) {
-        let id = req.params.id;
+router.delete('/removeGoal/:id', function(req, res, next) {
+    let id = req.params.id;
+    const goal = goals.find(goal => goal.id == id);
+    if (!goal) {
+        return res.status(400).json({ error: 'Goal not found' });
+    }
+    else {
         goals = goals.filter(goal => goal.id != id);
-        res.json({
-            message: 'Goal deleted successfully'
+        res.status(200).json({
+            message: 'Goal deleted successfully',
+            goal: goal
         });
-    } else {
-        res.status(400).json({ error: 'Invalid goal ID' });
     }
 });
 
